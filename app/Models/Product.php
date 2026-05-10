@@ -68,9 +68,7 @@ class Product extends Model
                 return match ($transaction->type) {
                     TransactionType::ADD => $carry + $transaction->qty,
                     TransactionType::USE => $carry - $transaction->qty,
-                    TransactionType::ADJUSTMENT => $carry + $transaction->qty,
                 };
             }, 0);
     }
-
 }

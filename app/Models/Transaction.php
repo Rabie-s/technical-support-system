@@ -25,6 +25,14 @@ class Transaction extends Model
         'created_by',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($transaction) {
+            $transaction->created_by = auth('admin')->id();
+        });
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -51,5 +59,10 @@ class Transaction extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class,'created_by');
     }
 }

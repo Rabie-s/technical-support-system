@@ -10,9 +10,9 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class ProductsTable
 {
@@ -33,8 +33,16 @@ class ProductsTable
                     ->label('Stock')
                     ->numeric()
                     ->sortable()
-                    ->default(0),
+                    ->default(0)
+                    ->extraAttributes(function ($record) {
+                        if ($record->stock <= $record->min_qty) {
+                            return ['style' => 'background-color:red'];
+                        }
+
+                        return [];
+                    }),
                 TextColumn::make('min_qty')
+                    ->label('Main quantity')
                     ->numeric()
                     ->sortable(),
                 ImageColumn::make('image'),
@@ -51,8 +59,12 @@ class ProductsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('transactions'))
             ->filters([
+                SelectFilter::make('item_type_id')
+                    ->label('Item Type')
+                    ->relationship('itemType', 'name')
+                    ->searchable()
+                    ->preload(),
                 TrashedFilter::make(),
             ])
             ->recordActions([

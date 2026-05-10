@@ -15,14 +15,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TransactionResource extends Resource
 {
+    protected static UnitEnum|string|null $navigationGroup = 'Stock';
+
     protected static ?string $model = Transaction::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsUpDown;
 
     public static function form(Schema $schema): Schema
     {
@@ -54,5 +55,15 @@ class TransactionResource extends Resource
             'view' => ViewTransaction::route('/{record}'),
             'edit' => EditTransaction::route('/{record}/edit'),
         ];
+    }
+
+    public static function canEdit($record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return false;
     }
 }
