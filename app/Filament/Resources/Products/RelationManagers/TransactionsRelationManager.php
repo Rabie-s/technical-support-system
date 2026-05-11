@@ -19,7 +19,7 @@ class TransactionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'transactions';
 
-    protected static ?string $relatedResource = TransactionResource::class;
+    //protected static ?string $relatedResource = TransactionResource::class;
 
     public function isReadOnly(): bool
     {
