@@ -1,15 +1,13 @@
 <x-filament-panels::page>
-    <x-filament::section>
-        {{ $this->form }}
-    </x-filament::section>
+    <form wire:submit="save">
+        <x-filament::section>
+            {{ $this->form }}
 
-    <div class="flex justify-end mt-4">
-        <x-filament::button
-            color="success"
-            wire:click="save"
-            wire:loading.attr="disabled"
-        >
-            Save all transactions
-        </x-filament::button>
-    </div>
+            <x-slot name="footer">
+                <x-filament::button type="submit">
+                    Save Bulk Transaction
+                </x-filament::button>
+            </x-slot>
+        </x-filament::section>
+    </form>
 </x-filament-panels::page>
