@@ -19,7 +19,7 @@ use UnitEnum;
 
 class ItemTypeResource extends Resource
 {
-    protected static UnitEnum|string|null $navigationGroup = 'Stock';
+    protected static UnitEnum|string|null $navigationGroup = 'Inventory';
 
     protected static ?string $model = ItemType::class;
 

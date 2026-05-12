@@ -26,4 +26,9 @@ class Department extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function computers(): HasMany
+    {
+        return $this->hasMany(Computer::class);
+    }
 }

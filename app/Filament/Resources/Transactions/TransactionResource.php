@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Transactions;
 
-use App\Filament\Resources\Transactions\Pages\CreateTransaction;
 use App\Filament\Resources\Transactions\Pages\BulkTransaction;
+use App\Filament\Resources\Transactions\Pages\CreateTransaction;
 use App\Filament\Resources\Transactions\Pages\EditTransaction;
 use App\Filament\Resources\Transactions\Pages\ListTransactions;
 use App\Filament\Resources\Transactions\Pages\ViewTransaction;
@@ -18,10 +18,9 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-
 class TransactionResource extends Resource
 {
-    protected static UnitEnum|string|null $navigationGroup = 'Stock';
+    protected static UnitEnum|string|null $navigationGroup = 'Inventory';
 
     protected static ?string $model = Transaction::class;
 
@@ -54,10 +53,10 @@ class TransactionResource extends Resource
         return [
             'index' => ListTransactions::route('/'),
             'create' => CreateTransaction::route('/create'),
-            'bulk' => Pages\BulkTransaction::route('/bulk'),
+            'bulk' => BulkTransaction::route('/bulk'),
             'view' => ViewTransaction::route('/{record}'),
             'edit' => EditTransaction::route('/{record}/edit'),
-            
+
         ];
     }
 

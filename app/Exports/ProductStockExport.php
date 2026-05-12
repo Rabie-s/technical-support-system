@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Exports;
+namespace App\Exports;
 
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ProductStockExport
 {
     public static function make(): ExcelExport
     {
         return ExcelExport::make()
-            ->withFilename('stock-' . now()->format('Y-m-d'))
+            ->withFilename('stock-'.now()->format('Y-m-d'))
             ->withColumns([
                 Column::make('name'),
                 Column::make('itemType.name')->heading('Item Type'),

@@ -27,7 +27,7 @@ class ProductResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Stock';
+    protected static UnitEnum|string|null $navigationGroup = 'Inventory';
 
     public static function form(Schema $schema): Schema
     {
@@ -73,5 +73,4 @@ class ProductResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
-    
 }

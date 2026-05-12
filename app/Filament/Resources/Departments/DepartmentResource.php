@@ -19,7 +19,7 @@ use UnitEnum;
 
 class DepartmentResource extends Resource
 {
-    protected static UnitEnum|string|null $navigationGroup = 'Settings';
+    protected static UnitEnum|string|null $navigationGroup = 'Organization';
 
     protected static ?string $model = Department::class;
 
