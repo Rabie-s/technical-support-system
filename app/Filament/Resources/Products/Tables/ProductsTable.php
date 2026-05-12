@@ -13,6 +13,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use App\Filament\Exports\ProductStockExport;
+use pxlrbt\FilamentExcel\Actions\ExportAction;
 
 class ProductsTable
 {
@@ -66,6 +68,12 @@ class ProductsTable
                     ->searchable()
                     ->preload(),
                 TrashedFilter::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exports([
+                        ProductStockExport::make(),
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),
