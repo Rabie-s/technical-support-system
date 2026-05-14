@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Admins\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 
 class AdminForm
@@ -20,6 +21,12 @@ class AdminForm
                 TextInput::make('password')
                     ->password()
                     ->required(),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
+
             ]);
     }
 }
