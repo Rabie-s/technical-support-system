@@ -17,6 +17,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
+use App\Enums\TransactionType;
 
 class BulkTransaction extends Page implements HasForms
 {
@@ -48,10 +49,7 @@ class BulkTransaction extends Page implements HasForms
                         Select::make('type')
                             ->label('Transaction Type')
                             ->required()
-                            ->options([
-                                'add' => 'Add',
-                                'use' => 'Use',
-                            ])
+                            ->options(TransactionType::class)
                             ->reactive(),
                     ]),
 
