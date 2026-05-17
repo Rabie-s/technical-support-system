@@ -62,13 +62,37 @@ class Product extends Model
      */
     public function getStockAttribute(): int
     {
+        $initial_stock = $add = $this->transactions()
+            ->where('type', TransactionType::INITIAL_STOCK)
+            ->sum('qty');
+
+        $add = $this->transactions()
+            ->where('type', TransactionType::ADD)
+            ->sum('qty');
+
+        $use = $this->transactions()
+            ->where('type', TransactionType::USE)
+            ->sum('qty');
+
+        return $initial_stock + $add - $use;
+    }
+
+    public function totalPurchased(): int
+    {
         return $this->transactions()
-            ->get()
-            ->reduce(function ($carry, $transaction) {
-                return match ($transaction->type) {
-                    TransactionType::ADD => $carry + $transaction->qty,
-                    TransactionType::USE => $carry - $transaction->qty,
-                };
-            }, 0);
+            ->whereIn('type', [
+                TransactionType::ADD,
+                TransactionType::INITIAL_STOCK,
+            ])
+            ->sum('qty');
+    }
+
+    public function totalUsed(): int
+    {
+        return $this->transactions()
+            ->whereIn('type', [
+                TransactionType::USE,
+            ])
+            ->sum('qty');
     }
 }

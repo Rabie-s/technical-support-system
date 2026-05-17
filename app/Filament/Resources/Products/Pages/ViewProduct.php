@@ -2,14 +2,12 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use App\Enums\TransactionType;
 use App\Filament\Resources\Products\ProductResource;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class ViewProduct extends ViewRecord
@@ -56,9 +54,10 @@ class ViewProduct extends ViewRecord
                     ->label('Current stock')
                     ->suffix(fn($record) => ' ' . $record->unit->value)
                     ->weight('bold')
-                    ->color(fn($record) => $record->stock <= $record->min_qty
-                        ? 'danger'
-                        : 'success'
+                    ->color(
+                        fn($record) => $record->stock <= $record->min_qty
+                            ? 'danger'
+                            : 'success'
                     ),
 
                 TextEntry::make('min_qty')
@@ -67,30 +66,26 @@ class ViewProduct extends ViewRecord
 
                 TextEntry::make('stock_status')
                     ->label('Status')
-                    ->getStateUsing(fn($record) => $record->stock <= $record->min_qty
-                        ? 'Low stock'
-                        : 'Sufficient'
+                    ->getStateUsing(
+                        fn($record) => $record->stock <= $record->min_qty
+                            ? 'Low stock'
+                            : 'Sufficient'
                     )
                     ->badge()
-                    ->color(fn($record) => $record->stock <= $record->min_qty
-                        ? 'danger'
-                        : 'success'
+                    ->color(
+                        fn($record) => $record->stock <= $record->min_qty
+                            ? 'danger'
+                            : 'success'
                     ),
 
                 TextEntry::make('total_purchased')
                     ->label('Total purchased')
-                    ->getStateUsing(fn($record) => $record->transactions()
-                        ->where('type', TransactionType::ADD)
-                        ->sum('qty')
-                    )
+                    ->getStateUsing(fn($record) => $record->totalPurchased())
                     ->suffix(fn($record) => ' ' . $record->unit->value),
 
                 TextEntry::make('total_used')
                     ->label('Total used')
-                    ->getStateUsing(fn($record) => $record->transactions()
-                        ->where('type', TransactionType::USE)
-                        ->sum('qty')
-                    )
+                    ->getStateUsing(fn($record) => $record->totalUsed())
                     ->suffix(fn($record) => ' ' . $record->unit->value),
 
                 TextEntry::make('total_movements')
