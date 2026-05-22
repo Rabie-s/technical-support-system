@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
 use App\Enums\TransactionType;
+use App\Services\ProductTransactionService;
 
 class BulkTransaction extends Page implements HasForms
 {
@@ -42,7 +43,6 @@ class BulkTransaction extends Page implements HasForms
                     ->schema([
                         Select::make('department_id')
                             ->label('Department')
-                            ->required()
                             ->options(Department::pluck('name', 'id'))
                             ->searchable(),
 
@@ -85,50 +85,32 @@ class BulkTransaction extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        $departmentId = $data['department_id'];
-        $transactionType = $data['type'];
-        $products = $data['products'];
-
-        DB::beginTransaction();
-
         try {
-            foreach ($products as $productData) {
-                $product = Product::find($productData['product_id']);
+            DB::transaction(function () use ($data) {
+                $service = app(ProductTransactionService::class);
 
-                if ($transactionType === 'use') {
-                    $currentStock = $product->stock;
-
-                    if ($currentStock < $productData['qty']) {
-                        throw new \Exception("Insufficient stock for product: {$product->name}. Current: {$currentStock}, Required: {$productData['qty']}");
-                    }
+                foreach ($data['products'] as $row) {
+                    $service->create([
+                        'product_id'    => $row['product_id'],
+                        'department_id' => $data['department_id'],
+                        'type'          => $data['type'],
+                        'qty'           => $row['qty'],
+                        'note'          => $row['note'] ?? null,
+                    ]);
                 }
-
-                Transaction::create([
-                    'product_id' => $productData['product_id'],
-                    'department_id' => $departmentId,
-                    'type' => $transactionType,
-                    'qty' => $productData['qty'],
-                    'note' => $productData['note'] ?? null,
-                    'created_by' => auth('admin')->id(),
-                ]);
-            }
-
-            DB::commit();
+            });
 
             Notification::make()
+                ->title('Transactions saved successfully')
                 ->success()
-                ->title('Bulk transaction created successfully')
-                ->body(count($products).' transactions have been created.')
                 ->send();
 
-            $this->redirect(TransactionResource::getUrl('index'));
+            $this->form->fill();
         } catch (\Exception $e) {
-            DB::rollBack();
-
             Notification::make()
-                ->danger()
-                ->title('Error creating bulk transaction')
+                ->title('Stock Error')
                 ->body($e->getMessage())
+                ->danger()
                 ->send();
         }
     }

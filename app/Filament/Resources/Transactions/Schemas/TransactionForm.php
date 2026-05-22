@@ -35,25 +35,7 @@ class TransactionForm
                             ->required()
                             ->numeric()
                             ->minValue(1)
-                            ->live()
-                            ->rules([
-                                fn(callable $get) => function (string $attribute, mixed $value, \Closure $fail) use ($get) {
-                                //dd($get('type')->value);    
-                                if ($get('type')->value !== TransactionType::USE->value) {
-                                        return;
-                                    }
-
-                                    $product = Product::select('id')->find($get('product_id'));
-
-                                    if (! $product) {
-                                        return;
-                                    }
-
-                                    if ((int) $value > $product->stock) {
-                                        $fail("Only {$product->stock} unit(s) available in stock.");
-                                    }
-                                },
-                            ]),
+                            ->live(),
 
                         Textarea::make('note')
                             ->columnSpanFull(),

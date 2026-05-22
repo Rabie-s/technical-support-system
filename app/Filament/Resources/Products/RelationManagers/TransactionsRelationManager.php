@@ -4,14 +4,15 @@ namespace App\Filament\Resources\Products\RelationManagers;
 
 
 use App\Enums\TransactionType;
-use App\Filament\Resources\Transactions\TransactionResource;
+use Filament\Notifications\Notification;
+use App\Services\ProductTransactionService;
+use Filament\Actions\CreateAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Actions\CreateAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -83,7 +84,22 @@ class TransactionsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Add transaction'),
+                    ->label('Add transaction')
+                    ->using(function (array $data, CreateAction $action) {
+                        $data['product_id'] = $this->getOwnerRecord()->id;
+
+                        try {
+                            return app(ProductTransactionService::class)->create($data);
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Stock Error')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->actions([
                 ViewAction::make(),
